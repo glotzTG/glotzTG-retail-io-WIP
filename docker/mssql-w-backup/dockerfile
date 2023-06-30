@@ -1,0 +1,36 @@
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+USER root
+
+# Set environment variables
+ENV ACCEPT_EULA=Y \
+    SA_PASSWORD=NotThePa55word
+
+RUN mkdir /var/opt/mssql/data && \
+    mkdir /var/opt/mssql/log && \
+    mkdir /var/opt/mssql/backup && \
+    chown -R 10001:10001 /var/opt/mssql/data && \
+    chown -R 10001:10001 /var/opt/mssql/log && \
+    chown -R 10001:10001 /var/opt/mssql/backup
+
+VOLUME /var/opt/mssql/backup
+
+# Set the new data and log file paths
+ENV MSSQL_DATA_DIR=/var/opt/mssql/data \
+    MSSQL_LOG_DIR=/var/opt/mssql/log \
+    MSSQL_BACKUP_DIR=/var/opt/mssql/backup
+
+# Expose SQL Server port
+EXPOSE 1433
+
+# Start SQL Server and restore the database
+CMD /opt/mssql/bin/sqlservr & \
+    sleep 30s && \
+    /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'NotThePa55word' \
+    -Q "RESTORE DATABASE [$BACKUP_FILENAME] FROM DISK = '/var/opt/mssql/backup/$BACKUP_FILENAME.bak' WITH MOVE '$BACKUP_FILENAME' TO '/var/opt/mssql/data/$BACKUP_FILENAME.mdf', MOVE '$BACKUP_FILENAME' TO '/var/opt/mssql/log/$BACKUP_FILENAME.ldf', NOUNLOAD, REPLACE" && \
+    sleep 30s && \
+    pkill sqlservr && \
+    /opt/mssql/bin/sqlservr
+#/Users/glotz/Documents/mssql/
+#docker build --build-arg BACKUP_FILENAME=JE_Empty_20231 -t mssql-2022-je-empty-20231 .
+#docker run -d -p 5533:1433 --name sql-server-container -e BACKUP_FILENAME=JE_Empty_20231 -v /Users/glotz/Documents/mssql/backup:/var/opt/mssql/backup  -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=NotThePa55word' -e 'MSSQL_PID=Developer' mssql-2022-je-empty-20231

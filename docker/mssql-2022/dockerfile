@@ -1,0 +1,12 @@
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+USER root
+
+# Set environment variables
+ENV ACCEPT_EULA=Y \
+    SA_PASSWORD=NotThePa55word!
+
+# Expose SQL Server port
+EXPOSE 1433
+
+CMD /opt/mssql/bin/sqlservr

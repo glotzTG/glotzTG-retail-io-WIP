@@ -1,0 +1,33 @@
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+USER root
+
+# Create a config directory
+RUN mkdir /var/opt/mssql/data && \
+    mkdir /var/opt/mssql/log && \
+    mkdir /var/opt/mssql/backup && \
+    chown -R 10001:10001 /var/opt/mssql/data && \
+    chown -R 10001:10001 /var/opt/mssql/log && \
+    chown -R 10001:10001 /var/opt/mssql/backup && \
+    mkdir -p /usr/config
+
+VOLUME /var/opt/mssql/backup
+
+# Set the new data and log file paths
+ENV MSSQL_DATA_DIR=/var/opt/mssql/data \
+    MSSQL_LOG_DIR=/var/opt/mssql/log \
+    MSSQL_BACKUP_DIR=/var/opt/mssql/backup
+
+WORKDIR /usr/config
+
+# Bundle config source
+COPY . /usr/config
+
+# Grant permissions for to our scripts to be executable
+RUN chmod +x /usr/config/entrypoint.sh
+RUN chmod +x /usr/config/configure-db.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
+
+#docker build -t mssql-2022-custom .
+#docker run -d -e BACKUP_FILENAME=JE_Empty_20231 -v /Users/glotz/Documents/mssql/backup:/var/opt/mssql/backup -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=NotThePa55word!' -p 1433:1433 --name mssql-2022-custom -d mssql-2022-custom

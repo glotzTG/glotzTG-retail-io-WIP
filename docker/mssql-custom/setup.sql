@@ -1,7 +1,7 @@
 -- Declare variables
 DECLARE @DatabaseName NVARCHAR(100) = '$(backupFilename)';
-DECLARE @DataFilePath NVARCHAR(100) = '/var/opt/mssql/data/JE_Empty_20231.mdf';
-DECLARE @LogFilePath NVARCHAR(100) = '/var/opt/mssql/log/JE_Empty_20231.ldf';
+DECLARE @DataFilePath NVARCHAR(100) = '/var/opt/mssql/data/' + @DatabaseName  + '.mdf';
+DECLARE @LogFilePath NVARCHAR(100) = '/var/opt/mssql/log/' + @DatabaseName  + '.ldf';
 DECLARE @SqlStatement NVARCHAR(MAX);
 
 -- Construct the dynamic SQL statement

@@ -30,4 +30,5 @@ RUN chmod +x /usr/config/configure-db.sh
 ENTRYPOINT ["./entrypoint.sh"]
 
 #docker build -t mssql-2022-custom .
-#docker run -d -e BACKUP_FILENAME=JE_Empty_20231 -v /Users/glotz/Documents/mssql/backup:/var/opt/mssql/backup -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=NotThePa55word!' -p 1433:1433 --name mssql-2022-custom -d mssql-2022-custom
+#docker run -d -e BACKUP_FILENAME=JE_Empty_20231 -v /Users/glotz/Documents/mssql/backup:/var/opt/mssql/backup -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=NotThePa55word!' -p 1433:1433 --name mssql-2022-custom-empty -d mssql-2022-custom
+#docker run -d -e BACKUP_FILENAME=JE_Demo_20231 -v /Users/glotz/Documents/mssql/backup:/var/opt/mssql/backup -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=NotThePa55word!' -p 1433:1433 --name mssql-2022-custom-demo -d mssql-2022-custom

@@ -7,6 +7,8 @@ database_location="$3"
 container_name="$4"
 ports="$5"
 
+imageName="mssql-2022"
+
 # Set default ports if they are null or empty
 if [ -z "$ports" ]; then
     ports="1433:1433"
@@ -30,9 +32,9 @@ else
 fi
 
 # Check if the Docker image exists
-if ! docker image inspect mssql-2022-custom &> /dev/null; then
-    echo "Docker image 'mssql-2022-custom' does not exist. Building the image..."
-    docker build -t mssql-2022-custom .
+if ! docker image inspect "$imageName" &> /dev/null; then
+    echo "Docker image '$imageName' does not exist. Building the image..."
+    docker build -t "$imageName" .
 fi
 
 # Check if the database exists in the specified location
@@ -76,7 +78,7 @@ if [ -z "$container_name" ]; then
         -e 'SA_PASSWORD=NotThePa55word!' \
         -p "$ports" \
         --name mssql-2022 \
-        mssql-2022-custom
+        "$imageName"
 else
     if docker ps -a --filter name="$container_name" | grep -q "$container_name"; then
         echo "Container $container_name exists, stopping and deleting it..."
@@ -90,9 +92,9 @@ else
         -e 'SA_PASSWORD=NotThePa55word!' \
         -p "$ports" \
         --name "$container_name" \
-        mssql-2022-custom
+        "$imageName"
 fi
 
 # Example:
-# 1: ./startup.sh main JE_Empty_20231 /Users/glotz/Documents/mssql/backup mssql-2022-custom-empty 1433:1433
+# 1: ./startup.sh main JE_Empty_20231 /Users/glotz/Documents/mssql/backup mssql-2022-empty 1433:1433
 # 2: ./startup.sh main JE_Empty_20231

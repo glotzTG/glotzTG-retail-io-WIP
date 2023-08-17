@@ -1,3 +1,4 @@
 
 docker/mssql-custom/config.json
 *.bak
+.DS_Store
